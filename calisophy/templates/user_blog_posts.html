@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron text-center py-5 bg-light shadow-sm rounded">
+    <h1 class="display-5 fw-bold">Welcome to the page for {{ user.username }}</h1>
+    <img class="rounded-circle" src="{{ url_for('static', filename='profile_pics/' + current_user.profile_image) }}" alt="{{ user.username }}'s profile picture">
+</div>
+
+<div class="container my-5">
+    {% for post in blog_posts.items %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="card-title">
+                    <a href="{{ url_for('blog_posts.blog_post', blog_post_id=post.id) }}">{{ post.title }}</a>
+                </h2>
+                <p class="card-subtitle text-muted mb-2">
+                    Written By: <a href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a> | Published on: {{ post.date.strftime("%Y-%m-%d") }}
+                </p>
+                <hr>
+                <p class="card-text">{{ post.text }}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<nav aria-label="Page Navigation example">
+    <ul class="pagination justify-content-center">
+        {% for page_num in blog_posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if blog_posts.page == page_num %}
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">{{ page_num }}</span>
+                </li>
+            {% elif page_num %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('users.user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</nav>
+{% endblock %}

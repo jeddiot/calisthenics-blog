@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h3 class="card-title text-center mb-4">Welcome to the page of {{ current_user.username }}</h3>
+        <div class="text-center mb-4">
+            <img src="{{url_for('static', filename='profile_pics/' + current_user.profile_image)}}" 
+                 alt="Profile Picture" 
+                 class="rounded-circle shadow-sm" 
+                 style="width: 150px; height: 150px;">
+        </div>
+        <form method="POST" action="" enctype = "multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <div class="mb-3">
+                <label for="{{ form.username.id }}" class="form-label">{{ form.username.label }}</label>
+                {{ form.username(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.email.id }}" class="form-label">{{ form.email.label }}</label>
+                {{ form.email(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.picture.id }}" class="form-label">{{ form.picture.label }}</label>
+                {{ form.picture(class="form-control") }}
+            </div>
+
+            <div class="mb-3 text-center">
+                {{ form.submit(class="btn btn-outline-info w-100") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
