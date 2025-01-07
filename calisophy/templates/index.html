@@ -2,17 +2,17 @@
 {% block content %}
     <div class="jumbotron text-center py-5 bg-light shadow-sm rounded">
         <h1 class="display-5 fw-bold">Welcome back</h1>
-        <p class="lead text-muted">We're glad to have you here.</p>
+        <p class="lead text-muted">Continue your journey, warrior.</p>
     </div>
 
     <div class="container">
         {# Go through each blog post #}
         {% for post in blog_posts.items %}
     
-        <div class="other">
+        <div class="card">
             <div class="card-body">
                 <h2><a class="card-title" href="  {{ url_for('blog_posts.blog_post', blog_post_id=post.id) }}">{{ post.title }}</a></h2>
-                <a href="{{ url_for('users.user_posts', username=post.author.username) }}">Written By: {{ post.author.username }}</a>
+                Written By: <a href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
                 <p>Published on: {{ post.date.strftime('%Y-%m-%d') }}</p>
                 <p class="card-text">{{ post.text[:100] }}...</p>
                 <a href="{{ url_for('blog_posts.blog_post', blog_post_id=post.id) }}" class="btn btn-primary">Read Blog Post</a>
