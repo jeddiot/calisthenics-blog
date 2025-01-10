@@ -28,22 +28,29 @@ def logout():
     flash("Logged out successfully.")
     return redirect(url_for('core.index'))
 
-@users.route('/login', methods = ['GET', 'POST'])
+@users.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email = form.email.data).first()
+        # Retrieve user by username
+        user = User.query.filter_by(username=form.username.data).first()
 
-        if user.check_password(form.password.data) and user is not None:
+        if user is None:
+            flash('Invalid username or password', 'danger')
+            return redirect(url_for('users.login'))
+
+        # Check password only if user exists
+        if user.check_password(form.password.data):
             login_user(user)
             flash('Logged in successfully.')
-            next = request.args.get('next') # the page the user was visiting before logged in
+            next = request.args.get('next')  # The page the user was visiting before logging in
 
-            if next == None or next[0] == '/':
+            if not next or next[0] == '/':
                 next = url_for('core.index')
             
             return redirect(next)
-    return render_template('login.html', form = form)
+
+    return render_template('login.html', form=form)
 
 @users.route('/account', methods = ['GET', 'POST'])
 @login_required 
