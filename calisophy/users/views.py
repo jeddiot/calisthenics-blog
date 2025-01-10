@@ -33,7 +33,8 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         # Retrieve user by username
-        user = User.query.filter_by(username=form.username.data).first()
+        # user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(email = form.email.data).first()
 
         if user is None:
             flash('Invalid username or password', 'danger')
