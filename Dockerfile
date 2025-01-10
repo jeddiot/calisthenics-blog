@@ -1,18 +1,23 @@
+# Use an official Python runtime as a parent image
 FROM python:3.13.1
-# Set the working directory inside the container
+
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy all files into the container's working directory
+# Copy the current directory contents into the container at /app
 COPY . .
 
-# Install dependencies from requirements.txt
+# Install any needed packages specified in requirements.txt
 RUN pip3 install -r requirements.txt
 
-# Set the command to run the Python application
-CMD flask db upgrade && python3 app.py
+# Make port 5000 available to the world outside the container
+EXPOSE 5000
+
+# Run flask db upgrade and then python app.py when the container launches
+CMD ["sh", "-c", "flask db upgrade && python3 app.py"]
 
 # 1. Build the Docker image
-# Command: docker build -t calisophy .
+# Command: docker build -t calisthenics-blog .
 
 # 2. List all running containers (to find container ID or name)
 # Command: docker ps
@@ -27,7 +32,7 @@ CMD flask db upgrade && python3 app.py
 # Command: docker images
 
 # 6. Remove the Docker image (replace calisophy with image ID or name)
-# Command: docker rmi calisophy
+# Command: docker rmi calisthenics-blog
 
 # 7. Run a new container in detached mode (replace calisophy with image name)
-# Command: docker run -d --name calisophy-container calisophy
+# Command: docker run -p 5000:5000 -d --name calisthenics-blog-container calisthenics-blog

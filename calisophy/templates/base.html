@@ -49,6 +49,34 @@
             </div>
         </div>
     </nav>
+
+    <!-- Display flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="container mt-3">
+            {% for category, message in messages %}
+                <div class="alert-container">
+                    <div class="alert alert-{{ category }} alert-dismissible fade show flash-message" role="alert">
+                        {{ message }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <!-- JavaScript to hide the messages after 1 second -->
+        <script>
+            setTimeout(function() {
+                // Select all flash message elements
+                var flashMessages = document.querySelectorAll('.flash-message');
+                
+                // Iterate through each message and fade it out
+                flashMessages.forEach(function(flashMessage) {
+                    flashMessage.classList.remove('show');
+                    flashMessage.classList.add('fade');
+                });
+            }, 2000);  // 1000 milliseconds = 1 second
+        </script>
+    {% endif %}
+    {% endwith %}
     <div class="container mt-5">
         {% block content %}
         {% endblock %}

@@ -12,12 +12,27 @@ users = Blueprint('users', __name__)
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
+        
+        # Check if the email is already registered
+        email_exists = User.query.filter_by(email=form.email.data).first()
+        if email_exists:
+            flash("Email is already in use. Please choose a different one.", 'danger')
+
+        # Check if the username is already taken
+        username_exists = User.query.filter_by(username=form.username.data).first()
+        if username_exists:
+            flash("Username is already taken. Please choose a different one.", 'danger')
+        
+        # If either email or username exists, redirect back to register page
+        if email_exists or username_exists:
+            return redirect(url_for('users.register'))
+
         user = User(email = form.email.data,
                     username = form.username.data,
                     password = form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash("Registrated successfully.")
+        flash("Registrated successfully.", 'success')
         return redirect(url_for('users.login'))
     return render_template('register.html', form = form)
 
@@ -25,7 +40,7 @@ def register():
 @login_required # return to login page if not logged in
 def logout():
     logout_user()
-    flash("Logged out successfully.")
+    flash("Logged out successfully.", 'success')
     return redirect(url_for('core.index'))
 
 @users.route('/login', methods=['GET', 'POST'])
@@ -37,13 +52,19 @@ def login():
         user = User.query.filter_by(email = form.email.data).first()
 
         if user is None:
+            # If the email does not exist in the database
             flash('Invalid username or password', 'danger')
             return redirect(url_for('users.login'))
 
+        # If the email exists but the password is incorrect
+        if not user.check_password(form.password.data):
+            flash('Incorrect password. Please try again.', 'danger')
+            return redirect(url_for('users.login'))
+        
         # Check password only if user exists
         if user.check_password(form.password.data):
             login_user(user)
-            flash('Logged in successfully.')
+            flash('Logged in successfully.', 'success')
             next = request.args.get('next')  # The page the user was visiting before logging in
 
             if not next or next[0] == '/':
@@ -65,7 +86,7 @@ def account():
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
-        flash('User account updated.')
+        flash('User account updated.', 'success')
         return redirect(url_for('users.account'))
     elif request.method == 'GET':
         form.username.data = current_user.username
